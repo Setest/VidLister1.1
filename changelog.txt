@@ -1,0 +1,37 @@
+VidLister 1.1.0 beta1
+====================================
+- Add Russian translate in lexicon
+- Migrate all properties to the system properties
+- Add possibility manage "Topic" for all videos, and display it in frontend
+- Fix errors
+- Add possibility to input source in "New Video" (as text)
+- Add WayFinder templates (row,parent,inner etc) specialy for "Topic"
+- Add Chunk vlYoutubeExampleTopic specialy for discovery how you can use "Topic"
+
+VidLister 1.0.0 Alpha6
+====================================
+- Created / Updated timestamp to allow sorting
+
+VidLister 1.0.0 Alpha5
+====================================
+- Added idx (index) placeholder to snippet
+
+VidLister 1.0.0 Alpha4
+====================================
+- All fields editable
+- New video button
+
+VidLister 1.0.0 Alpha3
+====================================
+- Fixed JS path typo in snippet
+
+VidLister 1.0.0 Alpha2
+====================================
+- Youtube import now imports all videos instead of the 25 latest
+- Added 'active' property to Youtube & Vimeo plugin. Set to 'Yes' to activate imported videos
+- Added 'sortby' and 'sortdir' snippet properties to allow sorting
+- Keywords field is now optional
+
+VidLister 1.0.0 Alpha
+====================================
+- Initial release
