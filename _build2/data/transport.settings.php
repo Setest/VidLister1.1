@@ -10,8 +10,8 @@ switch ($add_settings_from) {
 			// $modx->log(modX::LOG_LEVEL_INFO,'PPP:'.$properties);flush();
 			if (!empty($properties)){
 				// $modx->log(modX::LOG_LEVEL_INFO,print_r($properties,true));flush();
-				$modx->log(modX::LOG_LEVEL_INFO,"Insert system properties from JSON file");flush();
 				$settings =json_decode($properties,true); // принимает только массив, вполне подходят экспортные параметры в UTF8-without BOM
+				$modx->log(modX::LOG_LEVEL_INFO,"Insert system properties from JSON file: ".print_r($settings,true));flush();
 				unset($properties);
 			}
 		}
@@ -42,6 +42,9 @@ switch ($add_settings_from) {
 
 // получаем итоговый массив настроек для последующего добавления его в пакет
 $settings_obj = array();
+
+$modx->log(modX::LOG_LEVEL_INFO,"Itog system settings: ".PHP_EOL.(json_encode($settings)).PHP_EOL);flush();
+
 foreach($settings as $cur_settings){
 	// $modx->log(modX::LOG_LEVEL_INFO,print_r($cur_settings,true));flush();
 	$setting = $modx->newObject('modSystemSetting');

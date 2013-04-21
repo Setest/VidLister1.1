@@ -1,4 +1,9 @@
-VidLister 1.1.0 beta1
+VidLister 1.1.1 beta1 (2013-04-21)
+====================================
+- Fix packages. Because in upgrade previos version (1.0.0 Alpha6) you can get many errors.
+
+
+VidLister 1.1.0 beta1 (2013-04-19)
 ====================================
 - Add Russian translate in lexicon
 - Migrate all properties to the system properties

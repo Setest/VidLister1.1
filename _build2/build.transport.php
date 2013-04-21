@@ -9,23 +9,32 @@ define('PKG_NAME','Vidlister');
 define('PKG_NAME_LOWER','vidlister');
 define('NAMESPACE_NAME', PKG_NAME_LOWER);
 define('PKG_CATEGORY', PKG_NAME);
-define('PKG_VERSION','1.1.0');
+define('PKG_VERSION','1.1.1');
 define('PKG_RELEASE','beta1');
  
 /* задаем пути для упаковщика */
 $root = dirname(dirname(__FILE__)).'/';
 $dir_build="_build2";
 
-$assets_comp_path=$root.'assets/components/'.PKG_NAME_LOWER;
-$core_comp_path=$root.'core/components/'.PKG_NAME_LOWER;
+// $assets_comp_path=$root.'assets/components/'.PKG_NAME_LOWER;
+// $core_comp_path=$root.'core/components/'.PKG_NAME_LOWER;
+
+$assets_comp_path=$root.$dir_build.'/resolvers/assets/components/'.PKG_NAME_LOWER;
+$core_comp_path=$root.$dir_build.'/resolvers/core/components/'.PKG_NAME_LOWER;
+
 
 $sources = array(
     'root' => $root,
     'build' => $root.$dir_build.'/',
     'data' => $root.$dir_build.'/data/',
     'resolvers' => $root.$dir_build.'/resolvers/',
-    'assets' => $root.$dir_build.'/resolvers/assets/',
-    'core' => $root.$dir_build.'/resolvers/core/',	
+	
+    // 'assets' => $root.$dir_build.'/resolvers/assets/components/',
+    // 'core' => $root.$dir_build.'/resolvers/core/components/',	 
+
+    'assets' => $assets_comp_path,
+    'core' => $core_comp_path,	
+	
     // 'resolver_assets' => $assets_comp_path,
     // 'resolver_core' => $core_comp_path,
     'elements' => $core_comp_path.'/elements/',
@@ -34,8 +43,16 @@ $sources = array(
     'chunks' => $core_comp_path.'/elements/chunks/',
     'lexicon' => $core_comp_path.'/lexicon/',
     'docs' => $core_comp_path.'/docs/',
-    'source_assets' => $root.'assets/components/'.PKG_NAME_LOWER,
-    'source_core' => $root.'core/components/'.PKG_NAME_LOWER,
+	
+    // 'source_assets' => $root.'assets/components/'.PKG_NAME_LOWER,
+    // 'source_core' => $root.'core/components/'.PKG_NAME_LOWER,
+	
+    // 'source_assets' => $root.$dir_build.'/resolvers/assets',
+    // 'source_core' => $root.$dir_build.'/resolvers/core',
+	
+    'source_assets' => $assets_comp_path,
+    'source_core' => $core_comp_path, 
+	
 );
 unset($root);
 
@@ -75,6 +92,10 @@ $builder->registerNamespace(PKG_NAME_LOWER,false,true,'{core_path}components/'.P
 /*------------== Создаем категорию ==-----------------*/
 // чтобы запихать плагин в категорию и дать красивый вид имени
 // в общем списке пакетов при установке
+
+
+// $modx->log(modX::LOG_LEVEL_INFO,file_get_contents($sources['docs'].'changelog.txt'));flush();
+
 $modx->log(modX::LOG_LEVEL_INFO,'Create category...');flush();
 $category= $modx->newObject('modCategory');
 $category->set('id',1);
@@ -102,7 +123,7 @@ $modx->log(modX::LOG_LEVEL_INFO,'Added item in menu.'); flush();
 
 /*------------== Добавляем системные переменные ==-----------------*/
 /* load system settings */
-$add_settings_from="modx"; 
+$add_settings_from="jsonfile"; 
 	// use "jsonfile" if you have file /data/properties/system_settings.json
 	// or "modx", if you want to extract setting from modx directly
 $settings = include $sources['data'].'transport.settings.php';
@@ -201,7 +222,12 @@ $modx->log(modX::LOG_LEVEL_INFO,'Adding resolve.plugin_events.php');flush();
 $vehicle->resolve('php',array(
     'source' => $sources['resolvers'].'resolve.plugin_events.php',
 ));
-// $builder->putVehicle($vehicle);
+
+// добавим наш компонент в систему
+$modx->log(modX::LOG_LEVEL_INFO,'Adding postactions.resolver.php');flush();
+$vehicle->resolve('php',array(
+    'source' => $sources['resolvers'].'postactions.resolver.php',
+));
 
 $modx->log(modX::LOG_LEVEL_INFO,'Adding ASSETS');flush();
 $vehicle->resolve('file',array(
@@ -215,11 +241,13 @@ $vehicle->resolve('file',array(
     'target' => "return MODX_CORE_PATH.'components/';",
 ));
 
-// добавим на компонент в систему
-$modx->log(modX::LOG_LEVEL_INFO,'Adding postactions.resolver.php');flush();
+// специальный резольвер который срабатывает последним после установки
+// компонента в систему, чтобы мы могли обновить таблицы БД по необходимости
+$modx->log(modX::LOG_LEVEL_INFO,'Adding afteractions.resolver.php');flush();
 $vehicle->resolve('php',array(
-    'source' => $sources['resolvers'].'postactions.resolver.php',
+    'source' => $sources['resolvers'].'afteractions.resolver.php',
 ));
+
 
 $builder->putVehicle($vehicle);
 
